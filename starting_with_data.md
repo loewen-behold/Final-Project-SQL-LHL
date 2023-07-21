@@ -18,18 +18,18 @@ SQL Queries:
 
 Answer: 
 
-PRODUCT NAME..........................................TOTAL REVENUE
+Top 10 products and their revenue
 
-Learning Thermostat 3rd Gen-USA - Stainless Steel.....23406.00
-Cam Outdoor Security Camera - USA.....................22288.00
-Cam Indoor Security Camera - USA......................20298.00
-17oz Stainless Steel Sport Bottle.....................6342.66
-Satin Black Ballpoint Pen.............................4198.95
-Protect Smoke + CO White Wired Alarm-USA..............4158.00
-Blackout Cap..........................................3589.11
-Leatherette Journal...................................3505.81
-Android 17oz Stainless Steel Sport Bottle.............3171.33
-Power Bank............................................3135.44
+1) Learning Thermostat 3rd Gen-USA - Stainless Steel: $23406.00
+2) Cam Outdoor Security Camera - USA: $22288.00
+3) Cam Indoor Security Camera - USA: $20298.00
+4) 17oz Stainless Steel Sport Bottle: $6342.66
+5) Satin Black Ballpoint Pen: $4198.95
+6) Protect Smoke + CO White Wired Alarm-USA: $4158.00
+7) Blackout Cap: $3589.11
+8) Leatherette Journal: $3505.81
+9) Android 17oz Stainless Steel Sport Bottle: $3171.33
+10) Power Bank: $3135.44
 
 
 
@@ -84,13 +84,7 @@ SQL Queries:
 
 Answer:
 
-........................Minimum time (s)....Maximum time (s)....Average time on site (s)
-
-Purchasing visits.......1...................3208................233.1684762261325346
-Non-purchasing visits...174.................4327................824.6956521739130435
-
-
-NOTE: I only calculated the range and average values of time spent on the site, but the visitors who made a purchase have a lower average time spent on the site (~4 min) than the visitors who did not make a purchase (~14 min).  However, it appears that the minimum time spent on the site is 1 second for someone who made a purchase, so there's obviously an error in the data.
+I only calculated the range and average values of time spent on the site, but the visitors who made a purchase had a lower average time spent on the site (~4 min) than the visitors who did not make a purchase (~14 min).  However, it appears that the minimum time spent on the site is 1 second for someone who made a purchase, so there's obviously an error in the data.
 
 
 
@@ -121,17 +115,21 @@ SQL Queries:
 
 Answer:
 
-Full Visitor Id.........Products Viewed In July 2017....Purchase Made?
-9681060687378784629.....1509............................No
-4520185947201930710.....1420............................No
-8766368132729375069.....1254............................No
-8561959428190365620.....1163............................No
-5098754129844431163.....1127............................No
-1692871892756005610.....1057............................No
-6385346716669253089.....1038............................No
-8826538902252293768.....1032............................No
-0069486905584188344.....1019............................No
-5490104931040203110.....969.............................No
+Top 10 visitor ids for number of products viewed in July:
+
+Full Visitor Id
+1) 9681060687378784629 - Viewed 1509 items
+2) 4520185947201930710 - 1420
+3) 8766368132729375069 - 1254
+4) 8561959428190365620 - 1163
+5) 5098754129844431163 - 1127
+6) 1692871892756005610 - 1057
+7) 6385346716669253089 - 1038
+8) 8826538902252293768 - 1032
+9) 0069486905584188344 - 1019
+10) 5490104931040203110 - 969
+
+Not one of these top 10 visitors for products viewed made a purchase.  All of them are extreme window-shoppers!
 
 
 
@@ -156,14 +154,16 @@ SQL Queries:
 
 Answer:
 
-Full Visitor ID...........Number of Site Visits.......Purchase or not?
-0232377434237234751.......71..........................No
-3148617623907142276.......70..........................No
-4731929753431036485.......64..........................No
-1957458976293878100.......49..........................No
-4215347458239853405.......46..........................No
-4038076683036146727.......43..........................No
-3937673380007666721.......34..........................No
-066988820866909328........33..........................No
-7477638593794484792.......31..........................No
-9941821419294775713.......30..........................No
+Full Visitor ID and Number of Site Visits
+1) 0232377434237234751 - 71 site visits
+2) 3148617623907142276 - 70
+3) 4731929753431036485 - 64
+4) 1957458976293878100 - 49
+5) 4215347458239853405 - 46
+6) 4038076683036146727 - 43
+7) 3937673380007666721 - 34
+8) 066988820866909328 - 33
+9) 7477638593794484792 - 31
+10) 9941821419294775713 - 30
+
+Again, none of these visitors made a purchase.  So number of site visits is not an indicator of a purchaser.  Maybe they need some more incentive?

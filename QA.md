@@ -14,7 +14,8 @@ These are some of the general risk areas that I addressed, whether via cleaning,
 This is, by no means, an exhaustive list of ALL of the queries in dealing with specific risk areas.  Below I've simply provided a few examples and portions of my queries that I felt dealt with some of these risk areas.
 
 1. Finding and dealing with duplicate data: 
-- In order to deal with duplicate data, I had to be able to find out whether it was duplicated or not.  In this example, I checked to see whether the visitid field was unique in the all_sessions table.  This query specifically returns all the visitids that have more than one row associated with it.   
+- In order to deal with duplicate data, I had to be able to find out whether it was duplicated or not.  In this example, I checked to see whether the visitid field was unique in the all_sessions table.  This query specifically returns all the visitids that have more than one row associated with it. 
+
     SELECT *
     FROM all_sessions
     WHERE visitid IN (
@@ -32,12 +33,14 @@ This is, by no means, an exhaustive list of ALL of the queries in dealing with s
 
 2. Finding and dealing with NULL values:   
 - In most cases, I would simply exclude rows with NULL values when they were not needed for my specific query. In order to filter for these specific entries, I would use the IS NULL or IS NOT NULL statement in my query.  For example:
+
     SELECT *
     FROM all_sessions
     WHERE totaltransactionrevenue IS NOT NULL;
 
 - In some cases, I would treat a NULL as a 0 or a 1 (depending of the scenario) if I were wanting to perform calculations with columns that had them.  
 For example, when performing calculations involving the productquantity column in the all_sessions table , if the productquantity was NULL, the calculation would be incorrect.  In this case I would change productquantity to 1.  Here is the query I included in cleaning_data.md file to address these values.  Keep in mind there were multiple changes being made, but the "ELSE 1" in this case would deal with the NULL values for productquantity.
+
     UPDATE all_sessions al
       SET productquantity = 
       CASE WHEN al.totaltransactionrevenue IS NOT NULL
@@ -53,8 +56,10 @@ For example, when performing calculations involving the productquantity column i
         ELSE al.productquantity
       END;
 
+
 3. Inconsistent Data:     
-- When results or columns were not in the format I expected, I would either make changes to the table itself or just to a specific calculation with the CAST, TO_DATE, TO_CHAR, ROUND, or FLOOR functions, depending on what was necessary. For example, here's my query for changing the datatype of the totaltransactionrevenue column and divide it by 1 million in the all_sessions table
+- When results or columns were not in the format I expected, I would either make changes to the table itself or just to a specific calculation with the CAST, TO_DATE, TO_CHAR, ROUND, or FLOOR functions, depending on what was necessary. For example, here's my query for changing the datatype of the totaltransactionrevenue column and divide it by 1 million in the all_sessions table.
+
     ALTER TABLE all_sessions
     ALTER COLUMN totaltransactionrevenue TYPE numeric(15,2);
     
@@ -62,6 +67,7 @@ For example, when performing calculations involving the productquantity column i
     SET totaltransactionrevenue = ROUND(totaltransactionrevenue/1000000, 2);
 
 - I also changed a couple column names that didn't have user-friendly names. Here's an example of changing the productcategory and productname columns to exclude the "v2":
+
     ALTER TABLE all_sessions
     RENAME COLUMN v2productcategory TO productcategory ;
 
@@ -117,7 +123,8 @@ For example, when performing calculations involving the productquantity column i
 These are some of my thought processes/rabbit-holes/queries when trying to understand what the data on the analytics and all_sessions.  Some of this was me trying to see what was unique and what wasn't, how the tables were connected, and exploring some discrepencies in what I was seeing compared to what I thought I would see.
 
 a. Exploring visitid: 
-This seems to be a unique identifier of each website visit.  When the entire table is viewed, it appears that many of the rows are duplicated. At first I thought this was only due to the unit_price column, but after "eliminating" this column and counting how many distinct visitids still appeared more than once, I found there were still quite a number of them.  
+This seems to be a unique identifier of each website visit.  When the entire table is viewed, it appears that many of the rows are duplicated. At first I thought this was only due to the unit_price column, but after "eliminating" this column and counting how many distinct visitids still appeared more than once, I found there were still quite a number of them. 
+
     SELECT DISTINCT(visitid), count(*) AS counts
 		FROM (
         SELECT DISTINCT(visitid), visitnumber, visitstarttime, date, fullvisitorid, userid, channelgrouping, socialengagementtype, units_sold, pageviews, timeonsite, bounces, revenue
@@ -135,12 +142,15 @@ Overall, I may have been led to believe that maybe the unit_prices column was de
 
 b. Exploring visitstarttime:
 It was evident that this is the same value as the corresponding visitid.  Although there are a few that are close but don't quite match.  These were my queries to explore those that matched and those that did not:
-    --Counting how many distinct visitids match the visitstarttime (147894)
+
+--Counting how many distinct visitids match the visitstarttime (147894):
+
     SELECT COUNT(DISTINCT(visitid))
     FROM analytics
     WHERE visitid = visitstarttime;
 
-    --Counting how many distinct visitids do not match the visitstarttime (985):
+--Counting how many distinct visitids do not match the visitstarttime (985):
+
     SELECT COUNT(DISTINCT(visitid))
     FROM analytics
     WHERE visitid != visitstarttime;
@@ -148,6 +158,7 @@ It was evident that this is the same value as the corresponding visitid.  Althou
 It was difficult to determine whether the visitstarttime was intended to be identical to the visitid or not, but maybe that is how the visitid is generated, or maybe it was done in error.  Nonetheless, the visitstarttime does not even appear to be a valid time.  I then tried to figure out what the starttime might represent.  I tried a number of different ways to determine this, playing with one particular visitid to see if I could figure out if it was in milliseconds or seconds from the beginning of the year or from the epoch year, etc.  These are just a couple of my attemps.
 
 --Is it number of milliseconds from the time data was being collected? - timestamp incorrect based on other data
+
     SELECT 	visitid, 
             visitstarttime, 
             timestamp '2017-05-01 00:00:00' + interval '1493622167 milliseconds', 
@@ -158,6 +169,7 @@ It was difficult to determine whether the visitstarttime was intended to be iden
     LIMIT 1;
 
 --How about from the beginning of the year? - timestamp generated is incorrect again
+
     SELECT 	visitid, 
             visitstarttime, 
             timestamp '2017-01-01 00:00:00' + interval '1493622167 milliseconds', 
@@ -172,6 +184,7 @@ I also tried using seconds, but was getting a return date that was in the year 2
 What leads me to believe that this may represent some value for time is that two different fullvisitorids can end up having the same visitid.  Why this is suspicious is because if the visitid is being generated by a time of some sort, two different users could visit the site at exactly the same time, thus producing a visitid that is identical.  If that's the case, this is a poor method of generating unique visitids.
     
 Here was my query to see which visitids had more than one fullvisitorid attached to it:
+
     SELECT visitid, COUNT(fullvisitorid)
     FROM (
 	      SELECT DISTINCT(visitid), fullvisitorid
@@ -184,6 +197,7 @@ If I had more time, I would have liked to be able to figure out what this startt
 
 c. Exploring revenue:
 These have varying values, but perhaps they represents the revenue generated during that visit?  I checked to see whether the revenue would be unique for every visitid, but found this is not the case.
+
     SELECT visitid, COUNT(revenue)
     FROM analytics
     WHERE revenue IS NOT NULL
@@ -191,6 +205,7 @@ These have varying values, but perhaps they represents the revenue generated dur
     HAVING COUNT(revenue) > 1;
 
 So it could be the case that more than one purchase could be made per visit.  In which case, the sum of the revenues per visit should be equal to the totaltransactionrevenue column for that same visitid in the all_sessions table.  Indeed, I found that this was the case.  Here was my query for that:
+
     SELECT 	an.visitid, 
             SUM(an.revenue) AS total_revenue, 
             al.totaltransactionrevenue
@@ -202,6 +217,7 @@ So it could be the case that more than one purchase could be made per visit.  In
 NOTE: There are a couple of sums that don't quite add up, but they are off by 1/100000 dollars if these revenue and price columns were to be in dollars.  So I believe it's just a rounding discrepency.
 
 I also wanted to check whether there were visits in the analytics table that have a value for revenue, but do not appear in the all_sessions table.
+
     SELECT DISTINCT(visitid) 
     FROM analytics
     WHERE visitid NOT IN (

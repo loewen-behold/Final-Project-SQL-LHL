@@ -2,20 +2,24 @@
 
 
 ## Project/Goals
-1. Understanding the data:  - Explore the data in order to determine what information the tables are telling me, as well as how the tables are connected to each other.  
-                            - Find any data discrepancies or areas of concern so they can be "dealt with" or avoided.  
-                            - Get to know what datatypes I'm working with, and maybe even determine why certain datatypes were used as opposed to others (ie. a varchar instead of an integer).
+1. Understanding the data:  
+- Explore the data in order to determine what information the tables are telling me, as well as how the tables are connected to each other.  
+- Find any data discrepancies or areas of concern so they can be "dealt with" or avoided.  
+- Get to know what datatypes I'm working with, and maybe even determine why certain datatypes were used as opposed to others (ie. a varchar instead of an integer).
 
-2. Clean the data:  - Change any datatypes to be more consistent across tables 
-                    - Remove any duplicate rows if needed 
-                    - Rename columns to more user-friendly names
-                    - Create primary and foreign keys for ease of querying if possible
+2. Clean the data:  
+- Change any datatypes to be more consistent across tables 
+- Remove any duplicate rows if needed 
+- Rename columns to more user-friendly names
+- Create primary and foreign keys for ease of querying if possible
 
-3. Formulating/Answering questions: - Construct the queries that can answer these questions.  
-                                    - Try and make queries that are re-useable, even if the data were to be updated and altered.
+3. Formulating/Answering questions: 
+- Construct the queries that can answer these questions.
+- Try and make queries that are re-useable, even if the data were to be updated and altered.
 
-4. Construct a QA process: - Ensure that the data is consistent across tables
-                          - Double-check complex query results in order to avoid errors
+4. Construct a QA process: 
+- Ensure that the data is consistent across tables
+- Double-check complex query results in order to avoid errors
 
 
 ## Process
@@ -49,6 +53,7 @@ As mentioned, I ended up, for the most part, cleaning the data as I moved along 
 
 When asking and answering questions, I was able to generate some interesting insights that could be useful in a business and marketing setting.  I've summarized these insights in the results section below.  For specific queries and answers to the questions, refer to the **starting_with_questions.md** and **starting_with_data.md** files.
 
+
 4. Construct a QA process
 
 For this process, I had two main focuses.  The first was to develop QA techniques in order to work with the raw data - dealing with null, duplicate, and inconsistent data.  The second focus was to implement QA on the results I received from particular queries, especially those that were more complex and contained aggregate and window functions.  For a more detailed breakdown of my QA process, please refer to the **QA.md** file.
@@ -74,7 +79,7 @@ After analyzing and exploring the data, there are a number of valuable insights 
 - What was most interesting to me was the difference in the "story" I was seeing unfold when determining the top categories being purchased versus the top products being purchased from different locations.  For example, when looking at the most popular categories per region it appeared that many of the West Coast USA cities had Home Security/Home Temp control products as some of their most popular categories.  However, "zooming in" and looking at the most popular products for these West Coast cities was not actually home devices, but products specific to warmer climates - which makes sense!  
 
 
-## Revenue/Product Insights:
+### Revenue/Product Insights:
 
 - Given the data, we are able to look for patterns that correlate to increased revenue and identify patterns for potential growth points.
 
@@ -82,7 +87,7 @@ After analyzing and exploring the data, there are a number of valuable insights 
 
 - I've already talked about some of the findings for revenue and product popularity in regards to geographical location, but some things I didn't have the time to look into were comparing revenue to a visitors channel preference or social engagement.  I could have also investigated revenue with regards to the time - which time of the day or time of the month is revenue generation the highest, etc.  
 
-##Summary 
+### Summary 
 In summary, this data-driven approach empowers businesses to refine marketing strategies, optimize revenue streams, and enhance product offerings. By constantly analyzing and leveraging these insights, a competitive edge can be maintained in the market and continuously improve overall business performance.
 
 
