@@ -7,7 +7,8 @@ For each table, I've included a list of the changes made to it, but also decided
 
 ## All_Sessions table
 
-1. Changed monetary columns to NUMERIC instead of Integer and then moved the decimal place to represent a dollar value by dividing existing values by 1,000,000.
+**1.Datatype change and format update**
+Changed monetary columns to NUMERIC instead of Integer and then moved the decimal place to represent a dollar value by dividing existing values by 1,000,000.
 
   Query:
 
@@ -29,7 +30,8 @@ For each table, I've included a list of the changes made to it, but also decided
     UPDATE all_sessions
     SET transactionrevenue = ROUND(transactionrevenue/1000000, 2);
 
-2. When I was trying to determine the number of visitids that contain a value in the totaltransactionrevenue column, I received a different number of rows when I change  "visitid" to "distinct(visitid)" in my SELECT statement.  This told me that either a unique visitid may have more than one transaction or there might be a duplicate row for that visitid. 
+**2. Removing duplicate transactions**
+When I was trying to determine the number of visitids that contain a value in the totaltransactionrevenue column, I received a different number of rows when I change  "visitid" to "distinct(visitid)" in my SELECT statement.  This told me that either a unique visitid may have more than one transaction or there might be a duplicate row for that visitid. 
 
   I isolated the visitid(s) that has more than one row using the following query:
     
@@ -67,7 +69,8 @@ Despite the fact that I deleted this particular entry for my own analysis query 
 
 Alas, it appeared that there are multiple entries that have the same visitid and fullvisitorid, but may have different starttimes, product info, or transactionids.  I wasn't sure what to do with this information at this point, but I'm aware that if I were to perform any analysis on the duplicated visitids, I'd have to address that so as not to get faulty values. 
 
-3. I noticed that some cities seemed to be paired with the wrong country - namely New York listed as a Canadian City.  
+**3. Correcting information**
+I noticed that some cities seemed to be paired with the wrong country - namely New York listed as a Canadian City.
 
   I changed that specific entry's country from Canada to United States with the following query:
     
@@ -76,7 +79,8 @@ Alas, it appeared that there are multiple entries that have the same visitid and
 
 If I were to want to change all of the entries where the cities and countries were mismatched, I'd have to compare each entry in the all_sessions table with an accurate list of cities and their countries.  I did not have the time to perform this change on the entire table.
 
-4. I updated the productquantity column to better reflect the number of products purchased.  For this, I cross-referenced the visitid from the analytics table and if it exists, I summed up the units_sold from that visitid and used that sum to fill in the productquantity.  If it doesn't exist in the analytics page, I would instead divide the totaltransactionrevenue by the product price to estimate how many of the single item listed would have been sold.  I recognize this is not necessarily accurate, because if you look up a visitid that is found in both the analytics and all_sessions pages, the all_sessions will only have listed one product, whereas on the analytics table, there will have been multiple different products purchased.  However, I still wanted to make an educated guess on what the value for productquantity should be.  The analytics table is accurate in the units_sold because if you sum the revenue up for that particular visitid, it always matches the totaltransactionrevenue column in the all_sessions table.  
+**4. Update the productquantity column to better reflect the number of products purchased.**  
+For this, I cross-referenced the visitid from the analytics table and if it exists, I summed up the units_sold from that visitid and used that sum to fill in the productquantity.  If it doesn't exist in the analytics page, I would instead divide the totaltransactionrevenue by the product price to estimate how many of the single item listed would have been sold.  I recognize this is not necessarily accurate, because if you look up a visitid that is found in both the analytics and all_sessions pages, the all_sessions will only have listed one product, whereas on the analytics table, there will have been multiple different products purchased.  However, I still wanted to make an educated guess on what the value for productquantity should be.  The analytics table is accurate in the units_sold because if you sum the revenue up for that particular visitid, it always matches the totaltransactionrevenue column in the all_sessions table.  
 
   Here is my query making these changes to the productquantity column:
 
@@ -106,7 +110,8 @@ I also wanted to check to see if it worked using this query and it was a success
     WHERE totaltransactionrevenue IS NOT NULL;
 
 
-5. Changed the names of the columns v2productcategory and v2productname to productcategory and productname, respectively. This is more readable for the user.
+**5. Column name changes**
+Changed the names of the columns v2productcategory and v2productname to productcategory and productname, respectively. This is more readable for the user.
 
 Queries to alter names:
 
@@ -117,7 +122,8 @@ Queries to alter names:
     RENAME COLUMN v2productname TO productname;
 
 
-6. Changed product categories to something more legible - Once again, I only included the items affecting my queries in order to save some time, but the procedure would be very similar if I were to perform over the whole table.
+**6. Updated product categories column**
+Changed product categories to something more legible - Once again, I only included the items affecting my queries in order to save some time, but the procedure would be very similar if I were to perform over the whole table.
 
 Query to rename categories:
 
@@ -149,7 +155,8 @@ Query to rename categories:
 
 ## Products table
 
-1. Added and populated a column with product prices by grabbing prices from the all_sessions table via productsku.  First I want to see whether all the products had a product price attached to them in the all_sessions table.
+**1. Added and populated a new column - product prices**
+Added and populated a column with product prices by grabbing prices from the all_sessions table via productsku.  First I want to see whether all the products had a product price attached to them in the all_sessions table.
 
 Query:
     
@@ -214,7 +221,8 @@ Query:
 
 ## Analytics table
 
-1. I wanted to fill in the NULL timeonsite values by using the average value for timeonesite from the other entries that had the same number of pageviews.  I tried to perform this change, but after 1 hour of this query processing, I wasn't sure how long it was going to take, so I cancelled the process. I still wanted to leave the code as an example of what I would have done - but there must be a more efficient way.  Or maybe not since this is a 4 million row table.
+**1. Dealing with timeonsite NULL values**
+I wanted to fill in the NULL timeonsite values by using the average value for timeonesite from the other entries that had the same number of pageviews.  I tried to perform this change, but after 1 hour of this query processing, I wasn't sure how long it was going to take, so I cancelled the process. I still wanted to leave the code as an example of what I would have done - but there must be a more efficient way.  Or maybe not since this is a 4 million row table.
 
 Query:
       
