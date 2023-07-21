@@ -1,6 +1,6 @@
 # Starting With Questions
     
-**Question 1: Which cities and countries have the highest level of transaction revenues on the site?**
+1. **Which cities and countries have the highest level of transaction revenues on the site?**
 
 SQL Queries:
 
@@ -92,6 +92,7 @@ Average number of products by city and their ranking:
 
 
   COUNTRY         CITY            AVG NUM PRODUCTS BY CITY      AVG NUM PRODUCTS BY COUNTRY   CITY RANKING    COUNTRY RANKING
+
   United States...Sunnyvale.......43............................15	                          1	              1
   United States	  Atlanta	        36	                          15	                          2	              1
   United States	  Chicago	        19	                          15	                          3	              1
