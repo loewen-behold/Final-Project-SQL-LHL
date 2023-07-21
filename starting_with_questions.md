@@ -1,8 +1,8 @@
 # Starting With Questions
     
-**Question 1: Which cities and countries have the highest level of transaction revenues on the site?**
+## Question 1: Which cities and countries have the highest level of transaction revenues on the site?
 
-SQL Queries:
+#### SQL Queries:
 
     WITH total_rev_CTE AS (
       SELECT  country, 
@@ -25,7 +25,7 @@ SQL Queries:
     ORDER BY city_rank, country_rank;
 
 
-Answer:
+#### Answer:
 
   Top 5 Cities:           
   1) San Francisco        
@@ -43,9 +43,9 @@ Answer:
 
 
 
-**Question 2: What is the average number of products ordered from visitors in each city and country?**
+## Question 2: What is the average number of products ordered from visitors in each city and country?
 
-SQL Queries:
+#### SQL Queries:
 
     WITH avg_prod_CTE AS (
       SELECT 	country, 
@@ -67,7 +67,7 @@ SQL Queries:
     ORDER BY city_rank, country_rank;
 
 
-Answer:
+#### Answer:
 
 Average number of products by city:
 - Sunnyvale -	43
@@ -99,9 +99,9 @@ Average number of products by city:
 
 
 
-**Question 3: Is there any pattern in the types (product categories) of products ordered from visitors in each city and country?**
+## Question 3: Is there any pattern in the types (product categories) of products ordered from visitors in each city and country?
 
-SQL Queries:
+#### SQL Queries:
 
     SELECT 	DISTINCT(country),
         v2productcategory AS types_of_products
@@ -116,7 +116,7 @@ SQL Queries:
     ORDER BY city, types_of_products;
 
 
-Answer:
+#### Answer:
 
 As far as purchase patterns for each country, it appears that Canada and Switzerland like their apparel, likely because it's cold and they need the extra layers.  Also, they must REALLY know their clothing sizes to risk purchasing their clothes online.  Australia and Isreal are more into purchasing Home Security - cameras to monitor for theives sniping their amazon packages from their front doors, and thermostats to control the blistering heat in their warmer climates.  Finally, the United States just buys it all!  Why head to the physical store when you can just buy it online? Muahaha!
 
@@ -125,9 +125,9 @@ The West Coast cities (San Fransisco, Seattle, Sunnyvale, LA, San Jose, Palo Alt
 
 
 
-**Question 4: What is the top-selling product from each city/country? Can we find any pattern worthy of noting in the products sold?**
+## Question 4: What is the top-selling product from each city/country? Can we find any pattern worthy of noting in the products sold?
 
-SQL Queries:
+#### SQL Queries:
 
 --Top-selling product per country:
 
@@ -166,7 +166,7 @@ SQL Queries:
     ORDER BY quantity_sold DESC;
 
 
-Answers:
+#### Answers:
 
 --Top products per country--
 The United States seems to buy alot of reusable shopping bags.  Maybe Americans are like me and forget my reusable bags in the car EVERY time I go shopping, which leads me to buy more reusable bags.  That might be my personal top-selling product as well ;).  As far as information we can extract from this beyond what was observed in #3, I can't really tell.
@@ -176,9 +176,9 @@ This query yields more interesting results than the top-products per country did
 
 
 
-**Question 5: Can we summarize the impact of revenue generated from each city/country?**
+## Question 5: Can we summarize the impact of revenue generated from each city/country?
 
-SQL Queries:
+#### SQL Queries:
 
     WITH total_rev_CTE AS (
       SELECT  country, 
@@ -201,7 +201,7 @@ SQL Queries:
     ORDER BY city_rank, country_rank;
 
 
-Answer:
+#### Answer:
 
 This query is identical to the one I used in Q1.  While I'm not sure what "impact" means in this case, I can say that the more affluent cities/countries generate the most revenue.  In the very least, the larger/largest cities in each country seems to generate the most revenue.  This makes sense, since more businesses, more people, more demand for goods would exist in these places.
 

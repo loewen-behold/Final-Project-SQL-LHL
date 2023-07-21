@@ -1,8 +1,8 @@
 # Starting With Data
 
-**Question 1: Top 10 highest revenue products?**
+## Question 1: Top 10 highest revenue products?
 
-SQL Queries:
+#### SQL Queries:
 
     SELECT 	DISTINCT(sbs.productsku), 
         p.name, 
@@ -16,7 +16,7 @@ SQL Queries:
     LIMIT 10;
 
 
-Answer: 
+#### Answer: 
 
 Top 10 products and their revenue
 
@@ -33,11 +33,11 @@ Top 10 products and their revenue
 
 
 
-**Question 2: Compute the percentage of visitors to the site that actually makes a purchase**
+## Question 2: Compute the percentage of visitors to the site that actually makes a purchase
 
 NOTE: For this one, we had to notice that the analytics table only captures visits between 05-01-2017 and 08-01-2017 (3 months), but the all_sessions table has information from 08-01-2016 and 08-01-2017 (1 year).  This means when calculating purchase percentage we had to only count purchases within the same date range.
 
-SQL Queries:
+#### SQL Queries:
 
     SELECT 	(SELECT COUNT(visitid) FROM all_sessions WHERE totaltransactionrevenue IS NOT NULL AND date BETWEEN '2017-05-01' AND '2017-08-01') AS total_transactions,
         (SELECT COUNT(DISTINCT(visitid)) FROM analytics) AS total_visits,
@@ -54,15 +54,15 @@ SQL Queries:
     AS Percent Visits Resulting In purchase;
 
 
-Answer:
+#### Answer:
 
 0.015% - An extremely low percentage
 
 
 
-**Question 3: Does the amount of time spent on the site have any correlation with a purchase?**
+## Question 3: Does the amount of time spent on the site have any correlation with a purchase?
 
-SQL Queries:
+#### SQL Queries:
 
     WITH timevspurchaseCTE AS(
       SELECT 	DISTINCT(an.visitid), 
@@ -82,15 +82,15 @@ SQL Queries:
     WHERE totaltransactionrevenue IS NULL;
 
 
-Answer:
+#### Answer:
 
 I only calculated the range and average values of time spent on the site, but the visitors who made a purchase had a lower average time spent on the site (~4 min) than the visitors who did not make a purchase (~14 min).  However, it appears that the minimum time spent on the site is 1 second for someone who made a purchase, so there's obviously an error in the data.
 
 
 
-**Question 4: What is the fullvisitorid of the top 10 customers who have viewed the most number of products on the site in the month of July, 2017?  Did any of these visitors make a purchase?**
+## Question 4: What is the fullvisitorid of the top 10 customers who have viewed the most number of products on the site in the month of July, 2017?  Did any of these visitors make a purchase?
 
-SQL Queries:
+#### SQL Queries:
 
     WITH productviewsCTE AS (
       SELECT fullvisitorid, COUNT(unit_price) AS products_viewed
@@ -113,7 +113,7 @@ SQL Queries:
     FROM productviewsCTE;
 
 
-Answer:
+#### Answer:
 
 Top 10 visitor ids for number of products viewed in July:
 
@@ -133,9 +133,9 @@ Not one of these top 10 visitors for products viewed made a purchase.  All of th
 
 
 
-**Question 5: Top 5 visitors who have visited the site the most number of times.  Inlcude whether any of these customers have ever made a purchase on the site or not.**
+## Question 5: Top 5 visitors who have visited the site the most number of times.  Inlcude whether any of these customers have ever made a purchase on the site or not.
 
-SQL Queries:
+#### SQL Queries:
 
     SELECT 	fullvisitorid, 
         COUNT(DISTINCT(visitid)) AS num_visits_to_site,
@@ -152,7 +152,7 @@ SQL Queries:
     LIMIT 10;
 
 
-Answer:
+#### Answer:
 
 Full Visitor ID and Number of Site Visits
 1) 0232377434237234751 - 71 site visits
