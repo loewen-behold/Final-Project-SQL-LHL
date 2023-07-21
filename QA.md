@@ -13,7 +13,8 @@ These are some of the general risk areas that I addressed, whether via cleaning,
 ## QA Process (with Queries)
 This is, by no means, an exhaustive list of ALL of the queries in dealing with specific risk areas.  Below I've simply provided a few examples and portions of my queries that I felt dealt with some of these risk areas.
 
-**1. Finding and dealing with duplicate data:**
+### 1. Finding and dealing with duplicate data:
+
 - In order to deal with duplicate data, I had to be able to find out whether it was duplicated or not.  In this example, I checked to see whether the visitid field was unique in the all_sessions table.  This query specifically returns all the visitids that have more than one row associated with it. 
 
 Query:
@@ -38,7 +39,8 @@ Query:
     FROM all_sessions
     WHERE totaltransactionrevenue IS NOT NULL;
 
-**2. Finding and dealing with NULL values:** 
+### 2. Finding and dealing with NULL values:
+
 - In most cases, I would simply exclude rows with NULL values when they were not needed for my specific query. In order to filter for these specific entries, I would use the IS NULL or IS NOT NULL statement in my query.  
 
 Example Query:
@@ -68,7 +70,7 @@ Query:
       END;
 
 
-**3. Inconsistent Data:**     
+### 3. Inconsistent Data:    
 - When results or columns were not in the format I expected, I would either make changes to the table itself or just to a specific calculation with the CAST, TO_DATE, TO_CHAR, ROUND, or FLOOR functions, depending on what was necessary. For example, here's my query for changing the datatype of the totaltransactionrevenue column and divide it by 1 million in the all_sessions table.
 
 Queries:
@@ -90,7 +92,7 @@ Queries:
     RENAME COLUMN v2productname TO productname;
 
 
-**4. Calculation validity control:** 
+### 4. Calculation validity control:
 - Here are some specific QA Queries I created in order to double check that my results/calculations were accurate and unaffected by duplicate/null/inconsistent data:
 
 - For the question "Which cities and countries have the highest level of transaction revenues on the site?", my query would SUM the total revenue of each city and each country within the same query.  In the past, my results haven't always "added up" if I've messed up by GROUP BY statement or my PARTITION BY statement.  So I created a query that compares the total revenue listed for all the cities to the sum of the totaltransactionrevenue in the all_sessions table.   If the original query were created properly, these values should be the same.
@@ -138,10 +140,12 @@ Query:
     FROM t1;
 
 
-**5. BONUS QA SECTION:** 
+### 5. BONUS QA SECTION:
+
 These are some of my thought processes/rabbit-holes/queries when trying to understand what the data on the analytics and all_sessions.  Some of this was me trying to see what was unique and what wasn't, how the tables were connected, and exploring some discrepencies in what I was seeing compared to what I thought I would see.
 
-a) Exploring visitid: 
+#### a. Exploring visitid: 
+
 This seems to be a unique identifier of each website visit.  When the entire table is viewed, it appears that many of the rows are duplicated. At first I thought this was only due to the unit_price column, but after "eliminating" this column and counting how many distinct visitids still appeared more than once, I found there were still quite a number of them. 
 
 Query:
@@ -164,7 +168,8 @@ Query:
 Overall, I may have been led to believe that maybe the unit_prices column was designed to capture the different items a user would click on, but as to why there are varying units_sold and revenue values for one visitid is unclear.  When I looked up this visitid in the all_sessions table, the query returned nothing, leading me to believe that nothing was purchased in this visit.  But why have a value in the "units_sold" column if nothing was sold?  Unclear.
 
 
-b) Exploring visitstarttime:
+#### b. Exploring visitstarttime:
+
 It was evident that this is the same value as the corresponding visitid.  Although there are a few that are close but don't quite match.  These were my queries to explore those that matched and those that did not:
 
 --Counting how many distinct visitids match the visitstarttime (147894):
@@ -219,7 +224,7 @@ Here was my query to see which visitids had more than one fullvisitorid attached
 
 If I had more time, I would have liked to be able to figure out what this starttime is supposed to represent.
 
-c) Exploring revenue:
+#### c. Exploring revenue:
 These have varying values, but perhaps they represents the revenue generated during that visit?  I checked to see whether the revenue would be unique for every visitid, but found this is not the case.
 
 Query:

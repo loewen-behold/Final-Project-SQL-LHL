@@ -44,17 +44,17 @@ I've summarized some of my observations below
 - Observation 7: There are so many unknowns about the data that it makes it a nearly impossible task to fully clean without having someone else to consult.  As a result, I decided to take a different approach and do my cleaning out of necessity when answering the questions.  If a particular query I used "touched" data that needed cleaning, then I would address it at that point.  What I did realize from this, however, is that it's entirely possible that working with such large tables in a real-life setting could present the same challenges, and likely "new" things are found needing to be cleaned only after someone has explored the data trying to answer questions.
 
 
-#### 2. Cleaning the data**
+#### 2. Cleaning the data
 
 As mentioned, I ended up, for the most part, cleaning the data as I moved along through the questions.  I by no means cleaned the dataset completely, and in many cases, only cleaned the specific rows that a particular query was utilizing.  I did this to save some time, but also because if I showed I could do it for specific rows, then I could also do it across an entire table.  All changes, with their descriptions can be found in the **cleaning_data.md** file.
 
 
-#### 3. Formulating/Answering questions**
+#### 3. Formulating/Answering questions
 
 When asking and answering questions, I was able to generate some interesting insights that could be useful in a business and marketing setting.  I've summarized these insights in the results section below.  For specific queries and answers to the questions, refer to the **starting_with_questions.md** and **starting_with_data.md** files.
 
 
-#### 4. Construct a QA process**
+#### 4. Construct a QA process
 
 For this process, I had two main focuses.  The first was to develop QA techniques in order to work with the raw data - dealing with null, duplicate, and inconsistent data.  The second focus was to implement QA on the results I received from particular queries, especially those that were more complex and contained aggregate and window functions.  For a more detailed breakdown of my QA process, please refer to the **QA.md** file.
 
