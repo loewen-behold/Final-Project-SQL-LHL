@@ -7,7 +7,7 @@ For each table, I've included a list of the changes made to it, but also decided
 
 ## All_Sessions table
 
-### 1.Datatype change and format update
+### 1. Datatype change and format update
 
 Changed monetary columns to NUMERIC instead of Integer and then moved the decimal place to represent a dollar value by dividing existing values by 1,000,000.
 
