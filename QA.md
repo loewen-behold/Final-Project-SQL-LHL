@@ -16,6 +16,8 @@ This is, by no means, an exhaustive list of ALL of the queries in dealing with s
 1. Finding and dealing with duplicate data: 
 - In order to deal with duplicate data, I had to be able to find out whether it was duplicated or not.  In this example, I checked to see whether the visitid field was unique in the all_sessions table.  This query specifically returns all the visitids that have more than one row associated with it. 
 
+Query:
+
     SELECT *
     FROM all_sessions
     WHERE visitid IN (
@@ -26,13 +28,17 @@ This is, by no means, an exhaustive list of ALL of the queries in dealing with s
                       )
     ORDER BY visitid;
 
-- Once I know that I had duplicate data, I recognized that if these duplicates are included in my query, they would affect my aggregate functions.  More specifically calculations like SUM, AVG, COUNT, etc. are affected because some values would be included multiple times.  This can ultimately lead us to making false conclusions. I would deal with these by making good use of the DISTINCT feature, and then I would double check the calculations afterwards to ensure that the duplicate data was indeed excluded from the results.  Here's a basic query making use of DISTINCT:   
+- Once I know that I had duplicate data, I recognized that if these duplicates are included in my query, they would affect my aggregate functions.  More specifically calculations like SUM, AVG, COUNT, etc. are affected because some values would be included multiple times.  This can ultimately lead us to making false conclusions. I would deal with these by making good use of the DISTINCT feature, and then I would double check the calculations afterwards to ensure that the duplicate data was indeed excluded from the results.  
+
+Here's a basic query making use of DISTINCT:   
     SELECT DISTINCT(visitid), COUNT(*)
     FROM all_sessions
     WHERE totaltransactionrevenue IS NOT NULL;
 
 2. Finding and dealing with NULL values:   
-- In most cases, I would simply exclude rows with NULL values when they were not needed for my specific query. In order to filter for these specific entries, I would use the IS NULL or IS NOT NULL statement in my query.  For example:
+- In most cases, I would simply exclude rows with NULL values when they were not needed for my specific query. In order to filter for these specific entries, I would use the IS NULL or IS NOT NULL statement in my query.  
+
+Example Query:
 
     SELECT *
     FROM all_sessions
@@ -40,6 +46,8 @@ This is, by no means, an exhaustive list of ALL of the queries in dealing with s
 
 - In some cases, I would treat a NULL as a 0 or a 1 (depending of the scenario) if I were wanting to perform calculations with columns that had them.  
 For example, when performing calculations involving the productquantity column in the all_sessions table , if the productquantity was NULL, the calculation would be incorrect.  In this case I would change productquantity to 1.  Here is the query I included in cleaning_data.md file to address these values.  Keep in mind there were multiple changes being made, but the "ELSE 1" in this case would deal with the NULL values for productquantity.
+
+Query:
 
     UPDATE all_sessions al
       SET productquantity = 
@@ -60,6 +68,8 @@ For example, when performing calculations involving the productquantity column i
 3. Inconsistent Data:     
 - When results or columns were not in the format I expected, I would either make changes to the table itself or just to a specific calculation with the CAST, TO_DATE, TO_CHAR, ROUND, or FLOOR functions, depending on what was necessary. For example, here's my query for changing the datatype of the totaltransactionrevenue column and divide it by 1 million in the all_sessions table.
 
+Queries:
+
     ALTER TABLE all_sessions
     ALTER COLUMN totaltransactionrevenue TYPE numeric(15,2);
     
@@ -67,6 +77,8 @@ For example, when performing calculations involving the productquantity column i
     SET totaltransactionrevenue = ROUND(totaltransactionrevenue/1000000, 2);
 
 - I also changed a couple column names that didn't have user-friendly names. Here's an example of changing the productcategory and productname columns to exclude the "v2":
+
+Queries:
 
     ALTER TABLE all_sessions
     RENAME COLUMN v2productcategory TO productcategory ;
@@ -79,6 +91,8 @@ For example, when performing calculations involving the productquantity column i
 - Here are some specific QA Queries I created in order to double check that my results/calculations were accurate and unaffected by duplicate/null/inconsistent data:
 
 - For the question "Which cities and countries have the highest level of transaction revenues on the site?", my query would SUM the total revenue of each city and each country within the same query.  In the past, my results haven't always "added up" if I've messed up by GROUP BY statement or my PARTITION BY statement.  So I created a query that compares the total revenue listed for all the cities to the sum of the totaltransactionrevenue in the all_sessions table.   If the original query were created properly, these values should be the same.
+
+Query:
 
     WITH total_rev_CTE AS (
       SELECT  country, 
@@ -102,6 +116,8 @@ For example, when performing calculations involving the productquantity column i
 
 - For the question asking "What is the top-selling product from each city/country?" I needed to SUM the number of products sold according to each country so my QA query double checks that the original query is actually summing the products correctly.  I compared the total of the quantity_sold column with a sum of all productquantities on the all_sessions table.
 
+Query:
+
     WITH t1 AS (
       SELECT 	country,
           productname,
@@ -122,8 +138,10 @@ For example, when performing calculations involving the productquantity column i
 5. BONUS QA SECTION:  
 These are some of my thought processes/rabbit-holes/queries when trying to understand what the data on the analytics and all_sessions.  Some of this was me trying to see what was unique and what wasn't, how the tables were connected, and exploring some discrepencies in what I was seeing compared to what I thought I would see.
 
-a. Exploring visitid: 
+a) Exploring visitid: 
 This seems to be a unique identifier of each website visit.  When the entire table is viewed, it appears that many of the rows are duplicated. At first I thought this was only due to the unit_price column, but after "eliminating" this column and counting how many distinct visitids still appeared more than once, I found there were still quite a number of them. 
+
+Query:
 
     SELECT DISTINCT(visitid), count(*) AS counts
 		FROM (
@@ -133,6 +151,9 @@ This seems to be a unique identifier of each website visit.  When the entire tab
     HAVING count(*) > 1;
 
 I then focused in on one of these visitids on the list, particularly visitid = 1493627652, and found there was variation not only in the unit_price column, but in the revenue and units_sold columns as well.
+
+Query:
+
     SELECT *
     FROM analytics
     WHERE visitid = 1493627652;
@@ -140,7 +161,7 @@ I then focused in on one of these visitids on the list, particularly visitid = 1
 Overall, I may have been led to believe that maybe the unit_prices column was designed to capture the different items a user would click on, but as to why there are varying units_sold and revenue values for one visitid is unclear.  When I looked up this visitid in the all_sessions table, the query returned nothing, leading me to believe that nothing was purchased in this visit.  But why have a value in the "units_sold" column if nothing was sold?  Unclear.
 
 
-b. Exploring visitstarttime:
+b) Exploring visitstarttime:
 It was evident that this is the same value as the corresponding visitid.  Although there are a few that are close but don't quite match.  These were my queries to explore those that matched and those that did not:
 
 --Counting how many distinct visitids match the visitstarttime (147894):
@@ -195,8 +216,10 @@ Here was my query to see which visitids had more than one fullvisitorid attached
 
 If I had more time, I would have liked to be able to figure out what this starttime is supposed to represent.
 
-c. Exploring revenue:
+c) Exploring revenue:
 These have varying values, but perhaps they represents the revenue generated during that visit?  I checked to see whether the revenue would be unique for every visitid, but found this is not the case.
+
+Query:
 
     SELECT visitid, COUNT(revenue)
     FROM analytics
@@ -204,7 +227,9 @@ These have varying values, but perhaps they represents the revenue generated dur
     GROUP BY visitid
     HAVING COUNT(revenue) > 1;
 
-So it could be the case that more than one purchase could be made per visit.  In which case, the sum of the revenues per visit should be equal to the totaltransactionrevenue column for that same visitid in the all_sessions table.  Indeed, I found that this was the case.  Here was my query for that:
+So it could be the case that more than one purchase could be made per visit.  In which case, the sum of the revenues per visit should be equal to the totaltransactionrevenue column for that same visitid in the all_sessions table.  Indeed, I found that this was the case.  
+
+Here was my query for that:
 
     SELECT 	an.visitid, 
             SUM(an.revenue) AS total_revenue, 
@@ -217,6 +242,8 @@ So it could be the case that more than one purchase could be made per visit.  In
 NOTE: There are a couple of sums that don't quite add up, but they are off by 1/100000 dollars if these revenue and price columns were to be in dollars.  So I believe it's just a rounding discrepency.
 
 I also wanted to check whether there were visits in the analytics table that have a value for revenue, but do not appear in the all_sessions table.
+
+Query:
 
     SELECT DISTINCT(visitid) 
     FROM analytics
