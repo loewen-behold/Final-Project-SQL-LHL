@@ -70,32 +70,32 @@ SQL Queries:
 Answer:
 
 Average number of products by city:
-    Sunnyvale -	43
-    Atlanta -	36
-    Chicago -	19
-    Seattle -	12
-    Tel Aviv-Yafo -	7
-    San Francisco -	6
-    Los Angeles -	5
-    Austin - 5
-    San Bruno -	5
-    Toronto -	4
-    Zurich -	4
-    Mountain View -	3
-    New York - 3
-    Sydney - 3
-    San Jose - 2
-    Palo Alto	- 2
-    Nashville	- 1
-    Houston	- 1
-    Columbus - 1
+- Sunnyvale -	43
+- Atlanta -	36
+- Chicago -	19
+- Seattle -	12
+- Tel Aviv-Yafo -	7
+- San Francisco -	6
+- Los Angeles -	5
+- Austin - 5
+- San Bruno -	5
+- Toronto -	4
+- Zurich -	4
+- Mountain View -	3
+- New York - 3
+- Sydney - 3
+- San Jose - 2
+- Palo Alto	- 2
+- Nashville	- 1
+- Houston	- 1
+- Columbus - 1
 
 Average number of products by city:
-    United States - 15
-    Israel - 7
-    Canada - 4
-    Switzerland - 4
-    Australia - 3
+- United States - 15
+- Israel - 7
+- Canada - 4
+- Switzerland - 4
+- Australia - 3
 
 
 
