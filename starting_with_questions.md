@@ -1,28 +1,28 @@
 # Starting With Questions
     
-1. **Which cities and countries have the highest level of transaction revenues on the site?**
+**Question 1: Which cities and countries have the highest level of transaction revenues on the site?**
 
 SQL Queries:
 
-  WITH total_rev_CTE AS (
-    SELECT  country, 
-        CASE
-          WHEN city = 'not available in demo dataset' THEN 'Not Provided'
-          ELSE city
-        END AS city,
-        SUM(totaltransactionrevenue) AS total_revenue_per_city,
-        (SELECT SUM(totaltransactionrevenue) FROM all_sessions as2 WHERE as1.country = as2.country GROUP BY country) AS total_revenue_per_country
-    FROM all_sessions as1
-    GROUP BY country, city
-    HAVING SUM(totaltransactionrevenue) IS NOT NULL
-    ORDER BY country, city
-  )
-  SELECT 	*,
-      RANK () OVER (ORDER BY total_revenue_per_city DESC) AS city_rank,
-      DENSE_RANK () OVER (ORDER BY total_revenue_per_country DESC) AS country_rank
-  FROM total_rev_CTE
-  WHERE city != 'Not Provided'
-  ORDER BY city_rank, country_rank;
+    WITH total_rev_CTE AS (
+      SELECT  country, 
+          CASE
+            WHEN city = 'not available in demo dataset' THEN 'Not Provided'
+            ELSE city
+          END AS city,
+          SUM(totaltransactionrevenue) AS total_revenue_per_city,
+          (SELECT SUM(totaltransactionrevenue) FROM all_sessions as2 WHERE as1.country = as2.country GROUP BY country) AS total_revenue_per_country
+      FROM all_sessions as1
+      GROUP BY country, city
+      HAVING SUM(totaltransactionrevenue) IS NOT NULL
+      ORDER BY country, city
+    )
+    SELECT 	*,
+        RANK () OVER (ORDER BY total_revenue_per_city DESC) AS city_rank,
+        DENSE_RANK () OVER (ORDER BY total_revenue_per_country DESC) AS country_rank
+    FROM total_rev_CTE
+    WHERE city != 'Not Provided'
+    ORDER BY city_rank, country_rank;
 
 
 Answer:
@@ -69,49 +69,33 @@ SQL Queries:
 
 Answer:
 
-Average number of products by city and their ranking:
-1) Sunnyvale -	43
-2) Atlanta -	36
-3) Chicago -	19
-4) Seattle -	12
-5) Tel Aviv-Yafo -	7
-6) San Francisco -	6
-7) Los Angeles -	5
-7) Austin -	5
-7) San Bruno -	5
-8) Toronto -	4
-8) Zurich -	4
-9) Mountain View -	3
-9) New York -	3
-9) Sydney	- 3
-10) San Jose	- 2
-10) Palo Alto	- 2
-11) Nashville	- 1
-11) Houston	- 1
-11) Columbus	- 1
+Average number of products by city:
+    Sunnyvale -	43
+    Atlanta -	36
+    Chicago -	19
+    Seattle -	12
+    Tel Aviv-Yafo -	7
+    San Francisco -	6
+    Los Angeles -	5
+    Austin - 5
+    San Bruno -	5
+    Toronto -	4
+    Zurich -	4
+    Mountain View -	3
+    New York - 3
+    Sydney - 3
+    San Jose - 2
+    Palo Alto	- 2
+    Nashville	- 1
+    Houston	- 1
+    Columbus - 1
 
-
-  COUNTRY         CITY            AVG NUM PRODUCTS BY CITY      AVG NUM PRODUCTS BY COUNTRY   CITY RANKING    COUNTRY RANKING
-
-  United States...Sunnyvale.......43............................15	                          1	              1
-  United States	  Atlanta	        36	                          15	                          2	              1
-  United States	  Chicago	        19	                          15	                          3	              1
-  United States	  Seattle	        12	                          15	                          4	              1
-  Israel	        Tel Aviv-Yafo	  7	                            7	                            5	              2
-  United States	  San Francisco	  6	                            15	                          6	              1
-  United States	  Los Angeles	    5	                            15	                          7	              1
-  United States	  Austin	        5	                            15	                          7	              1
-  United States	  San Bruno	      5	                            15	                          7	              1
-  Canada	        Toronto	        4	                            4	                            8	              3
-  Switzerland	    Zurich	        4	                            4	                            8 	            3
-  United States	  Mountain View	  3	                            15	                          9 	            1
-  United States	  New York	      3	                            15	                          9 	            1
-  Australia	      Sydney	        3	                            3	                            9 	            4
-  United States	  San Jose	      2	                            15	                          10	            1
-  United States	  Palo Alto	      2	                            15	                          10	            1
-  United States	  Nashville	      1	                            15	                          11	            1
-  United States	  Houston	        1	                            15	                          11	            1
-  United States	  Columbus	      1	                            15	                          11	            1
+Average number of products by city:
+    United States - 15
+    Israel - 7
+    Canada - 4
+    Switzerland - 4
+    Australia - 3
 
 
 
@@ -119,17 +103,17 @@ Average number of products by city and their ranking:
 
 SQL Queries:
 
-  SELECT 	DISTINCT(country),
-      v2productcategory AS types_of_products
-  FROM all_sessions
-  WHERE totaltransactionrevenue IS NOT NULL
-  ORDER BY country, types_of_products;
+    SELECT 	DISTINCT(country),
+        v2productcategory AS types_of_products
+    FROM all_sessions
+    WHERE totaltransactionrevenue IS NOT NULL
+    ORDER BY country, types_of_products;
 
-  SELECT 	DISTINCT(city),
-      v2productcategory AS types_of_products
-  FROM all_sessions
-  WHERE totaltransactionrevenue IS NOT NULL
-  ORDER BY city, types_of_products;
+    SELECT 	DISTINCT(city),
+        v2productcategory AS types_of_products
+    FROM all_sessions
+    WHERE totaltransactionrevenue IS NOT NULL
+    ORDER BY city, types_of_products;
 
 
 Answer:
@@ -147,39 +131,39 @@ SQL Queries:
 
 --Top-selling product per country:
 
-  WITH country_product_quantities_CTE AS (
+    WITH country_product_quantities_CTE AS (
+      SELECT 	country,
+          productname,
+          SUM(productquantity) AS quantity_sold,
+          RANK() OVER (PARTITION BY country ORDER BY SUM(productquantity) DESC) AS rank
+      FROM all_sessions
+      WHERE totaltransactionrevenue IS NOT NULL
+      GROUP by country, productname
+    )
     SELECT 	country,
-        productname,
-        SUM(productquantity) AS quantity_sold,
-        RANK() OVER (PARTITION BY country ORDER BY SUM(productquantity) DESC) AS rank
-    FROM all_sessions
-    WHERE totaltransactionrevenue IS NOT NULL
-    GROUP by country, productname
-  )
-  SELECT 	country,
-      productname AS top_product,
-      quantity_sold
-  FROM country_product_quantities_CTE
-  WHERE rank = 1;
+        productname AS top_product,
+        quantity_sold
+    FROM country_product_quantities_CTE
+    WHERE rank = 1;
 
 
 --Top-selling product per city:
 
-  WITH city_product_quantities_CTE AS (
+    WITH city_product_quantities_CTE AS (
+      SELECT 	city,
+          productname,
+          SUM(productquantity) AS quantity_sold,
+          RANK() OVER (PARTITION BY city ORDER BY SUM(productquantity) DESC) AS rank
+      FROM all_sessions
+      WHERE totaltransactionrevenue IS NOT NULL
+      GROUP by city, productname
+    )
     SELECT 	city,
-        productname,
-        SUM(productquantity) AS quantity_sold,
-        RANK() OVER (PARTITION BY city ORDER BY SUM(productquantity) DESC) AS rank
-    FROM all_sessions
-    WHERE totaltransactionrevenue IS NOT NULL
-    GROUP by city, productname
-  )
-  SELECT 	city,
-      productname AS top_product,
-      quantity_sold
-  FROM city_product_quantities_CTE
-  WHERE rank = 1
-  ORDER BY quantity_sold DESC;
+        productname AS top_product,
+        quantity_sold
+    FROM city_product_quantities_CTE
+    WHERE rank = 1
+    ORDER BY quantity_sold DESC;
 
 
 Answers:
@@ -196,25 +180,25 @@ This query yields more interesting results than the top-products per country did
 
 SQL Queries:
 
-  WITH total_rev_CTE AS (
-    SELECT  country, 
-        CASE
-          WHEN city = 'not available in demo dataset' THEN 'Not Provided'
-          ELSE city
-        END AS city,
-        SUM(totaltransactionrevenue) AS total_revenue_per_city,
-        (SELECT SUM(totaltransactionrevenue) FROM all_sessions as2 WHERE as1.country = as2.country AND totaltransactionrevenue IS NOT NULL GROUP BY country) AS total_revenue_per_country
-    FROM all_sessions as1
-    GROUP BY country, city
-    HAVING SUM(totaltransactionrevenue) IS NOT NULL
-    ORDER BY country, city
-  )
-  SELECT 	*,
-      RANK () OVER (ORDER BY total_revenue_per_city DESC) AS city_rank,
-      DENSE_RANK () OVER (ORDER BY total_revenue_per_country DESC) AS country_rank
-  FROM total_rev_CTE
-  WHERE city != 'Not Provided'
-  ORDER BY city_rank, country_rank;
+    WITH total_rev_CTE AS (
+      SELECT  country, 
+          CASE
+            WHEN city = 'not available in demo dataset' THEN 'Not Provided'
+            ELSE city
+          END AS city,
+          SUM(totaltransactionrevenue) AS total_revenue_per_city,
+          (SELECT SUM(totaltransactionrevenue) FROM all_sessions as2 WHERE as1.country = as2.country AND totaltransactionrevenue IS NOT NULL GROUP BY country) AS total_revenue_per_country
+      FROM all_sessions as1
+      GROUP BY country, city
+      HAVING SUM(totaltransactionrevenue) IS NOT NULL
+      ORDER BY country, city
+    )
+    SELECT 	*,
+        RANK () OVER (ORDER BY total_revenue_per_city DESC) AS city_rank,
+        DENSE_RANK () OVER (ORDER BY total_revenue_per_country DESC) AS country_rank
+    FROM total_rev_CTE
+    WHERE city != 'Not Provided'
+    ORDER BY city_rank, country_rank;
 
 
 Answer:
