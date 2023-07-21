@@ -27,12 +27,19 @@ SQL Queries:
 
 Answer:
 
-  Top 5 Cities:           Top 5 Countries:
-  1) San Francisco        1) United States
-  2) Sunnyvale            2) Isreal
-  3) Atlanta              3) Australia
-  4) Palo Alto            4) Canada - Woo!
-  5) Tel Aviv-Yafo        5) Switzerland
+  Top 5 Cities:           
+  1) San Francisco        
+  2) Sunnyvale            
+  3) Atlanta              
+  4) Palo Alto            
+  5) Tel Aviv-Yafo        
+
+  Top 5 Countries:
+  1) United States
+  2) Isreal
+  3) Australia
+  4) Canada - Woo!
+  5) Switzerland
 
 
 
@@ -40,30 +47,52 @@ Answer:
 
 SQL Queries:
 
-  WITH avg_prod_CTE AS (
-    SELECT 	country, 
-        CASE
-          WHEN city = 'not available in demo dataset' THEN 'Not Provided'
-          ELSE city
-        END AS city, 
-        ROUND(AVG(productquantity)) AS avg_num_prod_per_visitor_city,
-        ROUND((SELECT AVG(productquantity) FROM all_sessions as2 WHERE as1.country = as2.country AND totaltransactionrevenue IS NOT NULL GROUP BY country)) AS avg_num_prod_per_visitor_country
-    FROM all_sessions as1
-    WHERE totaltransactionrevenue IS NOT NULL
-    GROUP BY country, city
-  )
-  SELECT 	*,
-      DENSE_RANK () OVER (ORDER BY avg_num_prod_per_visitor_city DESC) AS city_rank,
-      DENSE_RANK () OVER (ORDER BY avg_num_prod_per_visitor_country DESC) AS country_rank
-  FROM avg_prod_CTE
-  WHERE city != 'Not Provided'
-  ORDER BY city_rank, country_rank;
+    WITH avg_prod_CTE AS (
+      SELECT 	country, 
+          CASE
+            WHEN city = 'not available in demo dataset' THEN 'Not Provided'
+            ELSE city
+          END AS city, 
+          ROUND(AVG(productquantity)) AS avg_num_prod_per_visitor_city,
+          ROUND((SELECT AVG(productquantity) FROM all_sessions as2 WHERE as1.country = as2.country AND totaltransactionrevenue IS NOT NULL GROUP BY country)) AS avg_num_prod_per_visitor_country
+      FROM all_sessions as1
+      WHERE totaltransactionrevenue IS NOT NULL
+      GROUP BY country, city
+    )
+    SELECT 	*,
+        DENSE_RANK () OVER (ORDER BY avg_num_prod_per_visitor_city DESC) AS city_rank,
+        DENSE_RANK () OVER (ORDER BY avg_num_prod_per_visitor_country DESC) AS country_rank
+    FROM avg_prod_CTE
+    WHERE city != 'Not Provided'
+    ORDER BY city_rank, country_rank;
 
 
 Answer:
 
+Average number of products by city and their ranking:
+1) Sunnyvale -	43
+2) Atlanta -	36
+3) Chicago -	19
+4) Seattle -	12
+5) Tel Aviv-Yafo -	7
+6) San Francisco -	6
+7) Los Angeles -	5
+7) Austin -	5
+7) San Bruno -	5
+8) Toronto -	4
+8) Zurich -	4
+9) Mountain View -	3
+9) New York -	3
+9) Sydney	- 3
+10) San Jose	- 2
+10) Palo Alto	- 2
+11) Nashville	- 1
+11) Houston	- 1
+11) Columbus	- 1
+
+
   COUNTRY         CITY            AVG NUM PRODUCTS BY CITY      AVG NUM PRODUCTS BY COUNTRY   CITY RANKING    COUNTRY RANKING
-  United States	  Sunnyvale	      43	                          15	                          1	              1
+  United States...Sunnyvale.......43............................15	                          1	              1
   United States	  Atlanta	        36	                          15	                          2	              1
   United States	  Chicago	        19	                          15	                          3	              1
   United States	  Seattle	        12	                          15	                          4	              1
