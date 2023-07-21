@@ -8,6 +8,7 @@ For each table, I've included a list of the changes made to it, but also decided
 ## All_Sessions table
 
 1. Changed monetary columns to NUMERIC instead of Integer and then moved the decimal place to represent a dollar value by dividing existing values by 1,000,000
+    
     ALTER TABLE all_sessions
     ALTER COLUMN totaltransactionrevenue TYPE numeric(15,2),
     ALTER COLUMN productprice TYPE numeric(15,2),
@@ -27,6 +28,7 @@ For each table, I've included a list of the changes made to it, but also decided
     SET transactionrevenue = ROUND(transactionrevenue/1000000, 2);
 
 2. When I was trying to determine the number of visitids that contain a value in the totaltransactionrevenue column, I received a different number of rows when I change  "visitid" to "distinct(visitid)" in my SELECT statement.  This told me that either a unique visitid may have more than one transaction or there might be a duplicate row for that visitid. So I isolated the visitid(s) that has more than one row using the following query:
+    
     SELECT *
     FROM all_sessions
     WHERE visitid IN (
@@ -39,10 +41,12 @@ For each table, I've included a list of the changes made to it, but also decided
     ORDER BY visitid;
 
 After inspecting this visitid, I concluded that in this instance it was a duplicate row.  Even though the time, product info, and transactionids were different between entries it didn't make sense to have a different time for a single visit (same visitid, totaltransactionrevenue, transactions, timeonsite, pageviews, etc).  Thus, I decided to delete that entry so it didn't affect my analysis when summing transaction revenues for the countries.  Here's my query for deleting that specific entry in the table.
+    
     DELETE FROM all_sessions
     WHERE fullvisitorid = '3764227345226401562' and time = 0 AND visitid = 1490046065;
 
 Despite the fact that I deleted this particular entry for my own analysis query to be more accurate, it did lead me to wonder how many other duplicate rows there are for each visitid, with the same fullvisitorid. Here's my query for checking for visitids that have more than one row associated with it:
+    
     SELECT *
     FROM all_sessions
     WHERE visitid IN (
@@ -56,6 +60,7 @@ Despite the fact that I deleted this particular entry for my own analysis query 
 Alas, it appeared that there are multiple entries that have the same visitid and fullvisitorid, but may have different starttimes, product info, or transactionids.  I wasn't sure what to do with this information at this point, but I'm aware that if I were to perform any analysis on the duplicated visitids, I'd have to address that so as not to get faulty values. 
 
 3. I noticed that some cities seemed to be paired with the wrong country - namely New York listed as a Canadian City.  So I changed that specific entry's country from Canada to United States with the following query:
+    
     UPDATE all_sessions
     SET country = 'United States' WHERE country = 'Canada' AND city = 'New York';
 
@@ -80,6 +85,7 @@ If I were to want to change all of the entries where the cities and countries we
 
 
 I also wanted to check to see if it worked using this query and it was a success!
+    
     SELECT 	visitid,
         totaltransactionrevenue,
         productquantity,
@@ -128,19 +134,23 @@ I also wanted to check to see if it worked using this query and it was a success
 ## Products table
 
 1. Added and populated a column with product prices by grabbing prices from the all_sessions table via productsku.  First I want to see whether all the products had a product price attached to them in the all_sessions table. 
+    
     SELECT DISTINCT(p.sku), p.name, al.productprice
     FROM products p
     LEFT OUTER JOIN all_sessions al ON p.sku = al.productsku;
 
 It turned out that they do not all have prices.  But I will still wanted to perform this append to the products column since this is where I believe the product prices should be.  First, I added the column to the table.
+    
     ALTER TABLE products
     ADD COLUMN productprice NUMERIC(15,2);
 
 Then, I tried to use this query to fill in the column from the all_sessions table, but it didn't work. It said that it returned too many rows, which means that in the all_sessions table there are different product prices associated with a single sku.
+    
     UPDATE products p
     SET productprice = (SELECT productprice FROM all_sessions al WHERE p.sku = al.productsku);
 
 This is the query I ended up using instead.  It looks for the price for a single sku that appears the most times, and uses that value for product price.  In the case of a "tie" (that is, two prices for a single sku were both used the most times), I'd opt for the greater of the two prices.  All in all, this was a monstrosity of a query, but it got the job done.
+    
     UPDATE products p
     SET productprice = 
     CASE 
@@ -181,6 +191,7 @@ This is the query I ended up using instead.  It looks for the price for a single
 ## Analytics table
 
 1. I wanted to fill in the NULL timeonsite values by using the average value for timeonesite from the other entries that had the same number of pageviews.  I tried to perform this change, but after 1 hour of this query processing, I wasn't sure how long it was going to take, so I cancelled the process. I still wanted to leave the code as an example of what I would have done - but there must be a more efficient way.  Or maybe not since this is a 4 million row table.
+      
       UPDATE analytics an
       SET timeonsite =
       CASE 
